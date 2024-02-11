@@ -1,0 +1,48 @@
+import requests
+import logging
+import time
+import sys
+import json
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+root.addHandler(handler)
+
+
+def main():
+    logging.info({"message": "started running consumer"})
+
+    got_healthy_response = True
+    while got_healthy_response:
+        got_healthy_response = False
+
+        response = requests.get("http://server:15000/available_content")
+        if response.status_code != 200:
+            logging.warning({"message": "get request failed", "response": response})
+
+        json_content = json.loads(response.content)
+        logging.info({"message": "received content", "content": json_content})
+
+        for story_name in json_content["Available stories"]:
+            part_ind = 1
+            while True:
+                response = requests.get(f"http://server:15000/story/{story_name}/{part_ind}")
+                if response.status_code != 200:
+                    logging.warning({"message": "get request failed", "response content": response.content})
+                    break
+                
+                got_healthy_response = True
+
+                json_response = json.loads(response.content)
+
+                logging.info(json_response["new part"])
+                part_ind = int(json_response["next_id"])
+
+                time.sleep(2)
+
+
+if __name__ == '__main__':
+    time.sleep(3)
+    main()
