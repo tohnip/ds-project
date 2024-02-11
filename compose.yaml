@@ -1,0 +1,11 @@
+services:
+  broadcaster:
+    build: ./src/broadcaster/
+
+  consumer:
+    build: ./src/consumer/
+  
+  server:
+    build: ./src/server/
+    ports:
+      - "12345:15000"
