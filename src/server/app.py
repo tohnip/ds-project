@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_socketio import SocketIO, emit
 import logging
 import sys
 
@@ -9,9 +10,29 @@ root.setLevel(logging.DEBUG)
 root.addHandler(handler)
 
 app = Flask("Server node flask")
-
+socketio = SocketIO(app)
 content_storage = {} 
 
+
+@socketio.on('broadcast_connect')
+def handle_new_broadcaster():
+    logging.info({"message": "received new broadcast connection through socketio"})
+
+# @socketio.on('connect')
+# def handle_new_connection():
+#     logging.info({"message": "received new connection through socketio", "param1": "param1"})
+#     emit("random response", {"server asd": "asdasd server"})
+#     logging.info("emitted response")
+
+@socketio.on('broadcast_data')
+def handle_incoming_data(json):
+    logging.info({"message": "received data through socketio named event", "payload": json})
+
+    
+@socketio.on('message')
+def message(data):
+    logging.info(data)
+    emit("Another random response")
 
 @app.route("/")
 def show_help():
@@ -50,4 +71,6 @@ def get_titles():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=15000, host="0.0.0.0")
+    IP = "127.0.0.1"
+    IP = "0.0.0.0"  # Comment this out if you run this server outside docker
+    socketio.run(app, debug=True, port=15000, host=IP, allow_unsafe_werkzeug=True)
