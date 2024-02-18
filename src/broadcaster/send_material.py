@@ -13,6 +13,10 @@ root.setLevel(logging.DEBUG)
 root.addHandler(handler)
 
 
+hostname = "localhost"
+hostname = "server"  # comment this out if you want to run without docker
+
+
 def main():
     logging.info({"message": "started running broadcaster"})
 
@@ -25,16 +29,34 @@ def main():
 
     logging.info({"message": "loaded source material", "material": source_data})
 
-    with socketio.SimpleClient() as sio:
-        sio.connect('http://server:15000', transports=['websocket'])
-        # logging.info(f"my sid is {sio.sid}")
-        # logging.info(f"my transport is {sio.transport}")
-        while True:
-            sio.emit("message", f"\nYou will now hear the story of {source_data['file name']}:\n")
+    while True:
+        with socketio.SimpleClient() as sio:
+            sio.connect(f"http://{hostname}:15000", transports=['websocket'])
 
-            for word in source_data["content"].split(" "):
-                sio.emit("message", word)
-                time.sleep(0.4)
+            sio.emit("register_new_stream", {"stream_name": source_data["file name"]})
+            response = sio.receive()
+            if response[1]["result"] != "success":
+                time.sleep(4)
+                continue
+
+            while True:
+                sio.emit("message", f"\nYou will now hear the story of {source_data['file name']}:\n")
+                connection_healthy = True
+
+                for word in source_data["content"].split(" "):
+                    #sio.emit("message", word)
+                    sio.emit("broadcast_data", word)
+
+                    response = sio.receive()
+                    logging.info(response)
+                    if response[1]["result"] != "success":
+                        connection_healthy = False
+                        break
+
+                    time.sleep(0.4)
+
+                if not connection_healthy:
+                    break
 
     # while True:
     #     for word in source_data["content"].split(" "):
