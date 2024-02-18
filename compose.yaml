@@ -2,9 +2,12 @@ services:
   broadcaster:
     build: ./src/broadcaster/
 
-  consumer:
+  consumer1:
     build: ./src/consumer/
-  
+
+  consumer2:
+    build: ./src/consumer/
+
   server:
     build: ./src/server/
     ports:
