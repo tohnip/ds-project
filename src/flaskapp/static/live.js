@@ -17,9 +17,7 @@ let isStreaming = false
 const delay = s => new Promise(res => setTimeout(res, s*1000)); //https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line
 
 function getCDN(){
-    server_n = fetch("http://127.0.0.1:5000/get_cdn",{method:"GET"})
-    console.log(server_n)
-    return "http://127.0.0.1:5000" //dummy placeholder. someday this will query the "main" server to get usage data and return the least utilized server
+    return "http://127.0.0.1:5001/upload_chunk" //dummy placeholder. someday this will query the "main" server to get usage data and return the least utilized server
 }
 
 
@@ -30,24 +28,28 @@ async function stream(){
   isStreaming = true
   const recorder = new MediaRecorder(captureStream,{ mimeType: "video/webm; codecs=vp8" })
   console.log("hohohooho")
-  recorder.ondataavailable = pushChunk
-  recorder.onstop = sendToServer
-  while(isStreaming){
-    chunks = []
-    recorder.start()
-    await delay(5)
-    cdn = getCDN()
-    console.log("bruhhhhhhhhhh")
-    recorder.stop()
+  recorder.ondataavailable = sendToServer
+  recorder.onstop = blah
+
+
+  //outside of loop, get time, activate chunks, recorder, start recorder
+  //if 5/15 seconds since t, stop the recording, and after sendtoServer is done calling, refresh chunks and start recorder again (we can also try making new recorder)
+  //recorder.start()
+  let t = Date.now()
+  recorder.start(5000)
+  console.log(t)
+  async function blah(){
+      console.log("yooo")
   }
-  function pushChunk(event){
-    if(event.data.size > 0){
-      chunks.push(event)
-    }
-  }
-  async function sendToServer(){
+  async function sendToServer(event){
+    let chunks = []
+    chunks.push(event)
     const blob = new Blob(chunks,{type:"video/webm"})
-    fetch(getCDN(),{method:"POST",body:blob})
+    const blobData = new FormData()
+    blobData.append("chunk",event.data,"file")
+    console.log(blobData)
+    fetch(getCDN(),{method:"POST",body:blobData})
+    chunks = []
   }
 
 }
@@ -58,5 +60,5 @@ catch(err){
   return captureStream
 }
 async function stop_stream(){
-  isStreaming = false
+  recorder.stop()
 }
