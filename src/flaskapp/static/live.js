@@ -14,7 +14,6 @@ const displayMediaOptions = {
 };
 let isStreaming = false
 
-const delay = s => new Promise(res => setTimeout(res, s*1000)); //https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line
 
 async function getCDN(){
     const response = await fetch("http://127.0.0.1:5000/get_cdn",{method:"GET"})
@@ -24,6 +23,10 @@ async function getCDN(){
 
 
 async function stream(){
+  isStreaming = true
+  let stream_title = document.getElementById("stream_title").value
+  console.log(stream_title)
+
   let captureStream
   try{
   captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
@@ -38,20 +41,27 @@ async function stream(){
   recorder.start(5000)
   console.log(t)
   async function blah(){
-      console.log("yooo")
   }
   async function sendToServer(event){
+
     let chunks = []
     chunks.push(event)
     const blob = new Blob(chunks,{type:"video/webm"})
     const blobData = new FormData()
     blobData.append("chunk",event.data,"file")
+    if(!isStreaming){
+        console.log("we're done")
+        recorder.stop()
+        captureStream.getTracks().forEach((track) => track.stop())
+        return
+    }
     console.log(blobData)
     const [cdn, server_n] = await getCDN()
     fetch("http://127.0.0.1:5000/update_cdn/"+server_n+"/1",{method:"PUT"})
     await fetch(cdn,{method:"POST",body:blobData})
     fetch("http://127.0.0.1:5000/update_cdn/"+server_n+"/0",{method:"PUT"})
     chunks = []
+
   }
 
 }
@@ -62,5 +72,6 @@ catch(err){
   return captureStream
 }
 async function stop_stream(){
-  recorder.stop()
+  console.log("hello")
+  isStreaming = false
 }

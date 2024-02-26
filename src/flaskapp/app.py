@@ -1,9 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 utilization = {i:0 for i in range(8)}
 ip_map = {i:"http://127.0.0.1:500%d"%(i+1) for i in range(8)}
+lives = {}
 @app.route('/',methods=["GET"])
 def index():
    return render_template("index.html")
@@ -25,9 +26,17 @@ def get_cdn():
 
 @app.route("/update_cdn/<server_n>/<startflag>",methods=["PUT"])
 def update_util(server_n,startflag):
+    stream_title = request.form.get("stream_title")
+    lives[stream_title] = server_n
     utilization[int(server_n)] += int(startflag)*2-1
     print(utilization)
     return "OK"
+
+@app.route("/end_stream",methods=["DELETE"])
+def end_stream():
+    stream_title = request.form.get("stream_title")
+    utilization[lives[stream_title]] -= 1
+    del lives[stream_title]
 
 if __name__ == '__main__':
    app.run(host="127.0.0.1",port=5000)
