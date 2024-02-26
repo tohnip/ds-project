@@ -58,3 +58,7 @@ in the server folder to run the app just on your system. Notice that in that cas
 Similarly other components can be run locally. When testing broadcaster, it's probably a good idea to start the server on a docker container and then run the broadcaster outside of a container. Just need to take care in choosing the correct ports and hosts when things are running outside docker!
 
 > Easiest way to have only specific conteiners running would be to remove every container with the command above and then comment out the nodes you don't want running in the compose.yaml and starting with compose up again
+
+
+## Web app
+To run the web version that supports video streaming, spin up some CDNs by going to the `src/cdn` folder and running `python app.py <port number>` (don't use 5000 as this is reserved for the server). To start the main server, go to the `src/flaskapp` folder and run `python app.py`. Broadcasting and viewing can both be done in the browser at http://127.0.0.1:5000.
