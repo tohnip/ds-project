@@ -31,6 +31,12 @@ async function stream(){
   const data = await response.json()
   let streamid = data.streamid
 
+  let establishStreamData = new FormData()
+  establishStreamData.append('streamid',streamid)
+  establishStreamData.append('msg','Awaiting Data')
+  const initcdn = await getCDN(streamid)
+  const establishStream = await fetch(initcdn,{method:"POST",body:establishStreamData})
+
   console.log(streamid)
 
   let captureStream
@@ -54,7 +60,6 @@ async function stream(){
 
   }
   async function sendToServer(event){
-    console.log("this should eventually stop")
     if(!isStreaming){
       return
     }
@@ -67,6 +72,7 @@ async function stream(){
     const cdn = await getCDN(streamid)
     let formData = new FormData()
     formData.append('streamid',streamid)
+    blobData.append('streamid',streamid)
 
     await fetch(cdn,{method:"POST",body:blobData})
     await fetch("http://127.0.0.1:5000/update_stream",{method:"POST",body:formData})

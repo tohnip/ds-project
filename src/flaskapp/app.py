@@ -38,7 +38,9 @@ def get_cdn(streamid):
 def lives():
     return render_template("view.html",streams=titles_map)
 
-
+@app.route("/view/<streamid>",methods=["GET"])
+def view(streamid):
+    return render_template("watch.html",title=titles_map[streamid],streamid=streamid)
 
 @app.route("/create_stream",methods=["POST"])
 def create_stream():
@@ -65,7 +67,6 @@ def delete_stream():
     utilization[lives_map[streamid]] -= 1
     del lives_map[streamid]
     return "OK"
-
 
 if __name__ == '__main__':
    app.run(host="127.0.0.1",port=5000)

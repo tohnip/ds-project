@@ -3,7 +3,7 @@
 </head>
 <body>
 {% for k in streams %}
-{% set link = "http://127.0.0.1:5000/view" ~ k %}
+{% set link = "http://127.0.0.1:5000/view/" ~ k %}
 {% set title = streams[k] %}
 <li><a href={{link}}>{{title}}</a>
 {% endfor %}
