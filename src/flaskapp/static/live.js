@@ -37,8 +37,6 @@ async function stream(){
   const initcdn = await getCDN(streamid)
   const establishStream = await fetch(initcdn,{method:"POST",body:establishStreamData})
 
-  console.log(streamid)
-
   let captureStream
   try{
   captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
@@ -47,10 +45,8 @@ async function stream(){
   recorder.ondataavailable = sendToServer
   recorder.onstop = stop_recording
 
-  //idk i'm tired but the logic is not logicing
   recorder.start(15000)
   async function stop_recording(){
-    console.log("wtf")
     captureStream.getTracks().forEach((track) => track.stop())
     let formData = new FormData()
     formData.append('streamid',streamid)
@@ -65,15 +61,15 @@ async function stream(){
     }
     const blobData = new FormData()
     blobData.append("chunk",event.data,"file")
-
-    console.log(blobData)
-    const cdn = await getCDN(streamid)
     let formData = new FormData()
     formData.append('streamid',streamid)
     blobData.append('streamid',streamid)
-    console.log(Date.now(), cdn)
-    await fetch(cdn,{method:"POST",body:blobData})
+
     await fetch("http://127.0.0.1:5000/update_stream",{method:"POST",body:formData})
+
+    const cdn = await getCDN(streamid)
+
+    await fetch(cdn,{method:"POST",body:blobData})
     chunks = []
 
   }
@@ -86,7 +82,6 @@ catch(err){
   return captureStream
 }
 async function stop_stream(){
-  console.log("we should have stopped")
   isStreaming = false
   recorder.stop()
 }

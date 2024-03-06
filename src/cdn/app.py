@@ -6,7 +6,6 @@ import io
 app = Flask(__name__)
 CORS(app)
 latest_chunks = {}
-called = 0
 
 @app.route("/",methods=["GET"])
 def index():
@@ -14,18 +13,11 @@ def index():
 
 @app.route("/upload_chunk",methods=["POST"])
 def upload_chunk():
-    global called
-
     streamid = request.form.get('streamid')
     if request.form.get("msg"):
         latest_chunks[streamid] = request.form.get("msg")
     else:
-        called += 1
         tmp = request.files.get("chunk").read()
-        if called == 1:
-
-            with open("chunk2.webm","wb+") as f2:
-                f2.write(tmp)
         f = io.BytesIO(tmp)
         latest_chunks[streamid] = f
 
@@ -36,10 +28,6 @@ def upload_chunk():
 
 @app.route("/download_chunk/<streamid>",methods=["GET"])
 def download_chunk(streamid):
-    print(latest_chunks, datetime.datetime.now(), "\n", "\n", "\n")
-
-
-
     if type(latest_chunks[streamid])==str:
         return {"msg":latest_chunks[streamid]}
     return send_file(latest_chunks[streamid],mimetype="video/webm")

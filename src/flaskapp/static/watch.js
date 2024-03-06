@@ -1,6 +1,5 @@
 const delay = s => new Promise(res => setTimeout(res, s*1000));
 async function load_stream(streamid){
-  console.log("FUCK YOU")
   vidframe = document.getElementById("vidframe")
   vidframe.addEventListener("loadedmetadata", () => {
     vidframe.play()
@@ -16,7 +15,6 @@ async function load_stream(streamid){
     async function sourceOpen(){
       const sourceBuffer = ms.addSourceBuffer("video/webm; codecs=vp8")
       while(true){
-        console.log("FUKC YOU")
         const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
         const data = await response.json()
         cdn = data.server_id

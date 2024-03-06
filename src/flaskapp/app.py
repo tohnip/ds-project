@@ -5,7 +5,7 @@ import datetime
 import base64
 app = Flask(__name__)
 CORS(app)
-utilization = {"http://127.0.0.1:500%d"%(i+1):0 for i in range(1)}
+utilization = {"http://127.0.0.1:500%d"%(i+1):0 for i in range(2)}
 lives_map = {}
 titles_map = {}
 #helper function
