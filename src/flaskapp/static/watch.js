@@ -10,20 +10,32 @@ async function load_stream(streamid){
     });
 });
     flag = false
-    while(true){
-      console.log("FUCK YOU")
-      const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
-      const data = await response.json()
-      cdn = data.server_id
-      const chunk = await fetch(cdn+"/download_chunk/"+streamid,{method:"GET"})
-      const resp = await chunk.blob()
+    const ms = new MediaSource()
+    ms.addEventListener("sourceopen", sourceOpen)
 
-      vidframe.src = window.URL.createObjectURL(resp)
-      //if(flag){
-      //  await sourceBuffer.appendBuffer(resp.arrayBuffer())
+    async function sourceOpen(){
+      const sourceBuffer = ms.addSourceBuffer("video/webm; codecs=vp8")
+      while(true){
+        console.log("FUKC YOU")
+        const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
+        const data = await response.json()
+        cdn = data.server_id
+        const chunk = await fetch(cdn+"/download_chunk/"+streamid,{method:"GET"})
+        const resp = await chunk.blob()
 
-      console.log(resp)
-      flag = true
-      await delay(15)
+        if(flag){
+          var fileReader = new FileReader()
+          fileReader.onload = function(event) {
+              arrayBuffer = event.target.result
+              sourceBuffer.appendBuffer(arrayBuffer)
+          };
+          await fileReader.readAsArrayBuffer(resp);
+        }
+        flag = true
+        await delay(15)
+
+      }
     }
+    vidframe.src = URL.createObjectURL(ms)
+
 }

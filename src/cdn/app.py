@@ -14,11 +14,19 @@ def index():
 
 @app.route("/upload_chunk",methods=["POST"])
 def upload_chunk():
+    global called
+
     streamid = request.form.get('streamid')
     if request.form.get("msg"):
         latest_chunks[streamid] = request.form.get("msg")
     else:
-        f = io.BytesIO(request.files.get("chunk").read())
+        called += 1
+        tmp = request.files.get("chunk").read()
+        if called == 1:
+
+            with open("chunk2.webm","wb+") as f2:
+                f2.write(tmp)
+        f = io.BytesIO(tmp)
         latest_chunks[streamid] = f
 
     return "OK"
