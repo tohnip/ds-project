@@ -6,6 +6,7 @@ import io
 app = Flask(__name__)
 CORS(app)
 latest_chunks = {}
+called = 0
 
 @app.route("/",methods=["GET"])
 def index():

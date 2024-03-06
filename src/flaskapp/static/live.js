@@ -30,7 +30,7 @@ async function stream(){
   const response = await fetch("http://127.0.0.1:5000/create_stream",{method:"POST",body:formData})
   const data = await response.json()
   let streamid = data.streamid
-
+  let header
   let establishStreamData = new FormData()
   establishStreamData.append('streamid',streamid)
   establishStreamData.append('msg','Awaiting Data')
@@ -48,7 +48,7 @@ async function stream(){
   recorder.onstop = stop_recording
 
   //idk i'm tired but the logic is not logicing
-  recorder.start(5000)
+  recorder.start(15000)
   async function stop_recording(){
     console.log("wtf")
     captureStream.getTracks().forEach((track) => track.stop())
@@ -63,17 +63,15 @@ async function stream(){
     if(!isStreaming){
       return
     }
-    let chunks = []
-    chunks.push(event)
-    const blob = new Blob(chunks,{type:"video/webm"})
     const blobData = new FormData()
     blobData.append("chunk",event.data,"file")
+
     console.log(blobData)
     const cdn = await getCDN(streamid)
     let formData = new FormData()
     formData.append('streamid',streamid)
     blobData.append('streamid',streamid)
-
+    console.log(Date.now(), cdn)
     await fetch(cdn,{method:"POST",body:blobData})
     await fetch("http://127.0.0.1:5000/update_stream",{method:"POST",body:formData})
     chunks = []

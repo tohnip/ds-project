@@ -1,24 +1,29 @@
 const delay = s => new Promise(res => setTimeout(res, s*1000));
-
 async function load_stream(streamid){
+  console.log("FUCK YOU")
   vidframe = document.getElementById("vidframe")
+  vidframe.addEventListener("loadedmetadata", () => {
+    vidframe.play()
+    .then(() => {})
+    .catch((error) => {
+      console.error('Error playing video:', error);
+    });
+});
+    flag = false
+    while(true){
+      console.log("FUCK YOU")
+      const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
+      const data = await response.json()
+      cdn = data.server_id
+      const chunk = await fetch(cdn+"/download_chunk/"+streamid,{method:"GET"})
+      const resp = await chunk.blob()
 
-  while(true){
-    const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
-    const data = await response.json()
-    cdn = data.server_id
+      vidframe.src = window.URL.createObjectURL(resp)
+      //if(flag){
+      //  await sourceBuffer.appendBuffer(resp.arrayBuffer())
 
-    const chunk = await fetch(cdn+"/download_chunk/"+streamid,{method:"GET"})
-    const newObjectUrl = await URL.createObjectURL(chunk.response())
-    const oldObjectUrl = vidframe.currentSrc
-    if( oldObjectUrl && oldObjectUrl.startsWith('blob:') ) {
-        vidframe.src = ''
-        URL.revokeObjectURL( oldObjectUrl )
+      console.log(resp)
+      flag = true
+      await delay(15)
     }
-    vidframe.src = await newObjectUrl;
-    await vidframe.load();
-
-    await delay(5)
-  }
-
 }
