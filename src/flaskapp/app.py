@@ -56,9 +56,10 @@ def create_stream():
 def update_stream():
     streamid = request.form.get("streamid")
     new_server_id = get_lowest_util()
-    utilization[lives_map[streamid]] -= 1
-    utilization[new_server_id] += 1
-    lives_map[streamid] = new_server_id
+    if utilization[lives_map[streamid]] - utilization[new_server_id] > 1:
+        utilization[lives_map[streamid]] -= 1
+        utilization[new_server_id] += 1
+        lives_map[streamid] = new_server_id
     return "OK"
 
 @app.route("/delete_stream",methods=["POST"])
