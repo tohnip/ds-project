@@ -30,7 +30,7 @@ async function load_stream(streamid){
           await fileReader.readAsArrayBuffer(resp);
         }
         flag = true
-        await delay(15)
+        await delay(5)
 
       }
     }

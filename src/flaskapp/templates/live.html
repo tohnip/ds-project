@@ -6,6 +6,8 @@
   Enter Livestream Title: <input type="text" id="stream_title"></input>
   <button onclick="stream()">Start!</button>
   <button onclick="stop_stream()">Stop!</button>
-</body>
-<script type = "text/javascript"
-        src = "{{ url_for('static', filename = 'live.js') }}" defer></script>
+
+<video id="live" width="640" height="360" controls>
+  Your browser does not support the video tag.
+</video>
+</body

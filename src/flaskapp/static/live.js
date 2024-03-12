@@ -23,6 +23,7 @@ async function getCDN(streamid){
 
 
 async function stream(){
+
   isStreaming = true
   let stream_title = document.getElementById("stream_title").value
   let formData = new FormData()
@@ -44,8 +45,9 @@ async function stream(){
   recorder = new MediaRecorder(captureStream,{ mimeType: "video/webm; codecs=vp8" })
   recorder.ondataavailable = sendToServer
   recorder.onstop = stop_recording
+  chunks = []
 
-  recorder.start(15000)
+  recorder.start(5000)
   async function stop_recording(){
     captureStream.getTracks().forEach((track) => track.stop())
     let formData = new FormData()
@@ -59,8 +61,10 @@ async function stream(){
     if(!isStreaming){
       return
     }
+    chunks.push(event.data)
+
     const blobData = new FormData()
-    blobData.append("chunk",event.data,"file")
+    blobData.append("chunk",new Blob(chunks, { type: 'video/webm' }),"file")
     let formData = new FormData()
     formData.append('streamid',streamid)
     blobData.append('streamid',streamid)
@@ -70,7 +74,6 @@ async function stream(){
     const cdn = await getCDN(streamid)
 
     await fetch(cdn,{method:"POST",body:blobData})
-    chunks = []
 
   }
 
