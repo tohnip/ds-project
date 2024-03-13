@@ -17,8 +17,7 @@ async function load_stream(streamid){
       while(true){
         const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
         const data = await response.json()
-        cdn = data.server_id
-        const chunk = await fetch(cdn+"/download_chunk/"+streamid,{method:"GET"})
+        const chunk = await fetch("http://"+data.server_address+":"+data.server_port+"/download_chunk/"+streamid,{method:"GET"})
         const resp = await chunk.blob()
 
         if(flag){
