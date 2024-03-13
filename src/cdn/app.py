@@ -3,6 +3,24 @@ from flask_cors import CORS
 from sys import argv
 import datetime
 import io
+import requests
+import os
+import time
+import sys
+import logging
+
+
+LOCAL_TESTING_IP = "127.0.0.1"
+LOCAL_TESTING_HOSTNAME = "the_only_server"
+LOCAL_TESTING_PORT = 10001
+
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+root.addHandler(handler)
+
 app = Flask(__name__)
 CORS(app)
 latest_chunks = {}
@@ -29,9 +47,23 @@ def upload_chunk():
 @app.route("/download_chunk/<streamid>",methods=["GET"])
 def download_chunk(streamid):
     if type(latest_chunks[streamid])==str:
+        logging.info({"message": "sending message"})
         return {"msg":latest_chunks[streamid]}
+    logging.info({"message": "sending file", "file size": latest_chunks[streamid].getbuffer().nbytes})
     return send_file(latest_chunks[streamid],mimetype="video/webm")
 
 
 if __name__ == '__main__':
-   app.run(host="127.0.0.1",port=int(argv[1]))
+    time.sleep(2)
+    requests.post(
+        url=f"http://{os.environ['LOAD_BALANCER_HOSTNAME']}:{os.environ['LOAD_BALANCER_PORT']}/register_server",
+        json={
+            "address": "127.0.0.1", #os.environ.get("ADDRESS", LOCAL_TESTING_IP),
+            "hostname": os.environ.get("HOSTNAME", LOCAL_TESTING_HOSTNAME),
+            "port": os.environ.get("OUTSIDE_PORT", LOCAL_TESTING_PORT),
+        }
+    )
+    app.run(
+       host=os.environ.get("ADDRESS", LOCAL_TESTING_IP),
+       port=os.environ.get("PORT", LOCAL_TESTING_PORT)
+    )

@@ -18,7 +18,7 @@ let recorder = null
 async function getCDN(streamid){
     const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
     const data = await response.json()
-    return data.server_id+"/upload_chunk"
+    return "http://"+data.server_address+":"+data.server_port+"/upload_chunk"
 }
 
 

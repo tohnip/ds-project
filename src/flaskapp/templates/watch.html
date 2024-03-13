@@ -1,9 +1,9 @@
 <head>
 <title>Watching Stream -- {{title}}</title>
+<script type = "text/javascript"
+        src = "{{ url_for('static', filename = 'watch.js') }}" defer></script>
 </head>
 <body onload="load_stream('{{streamid}}')">
 A stream will be displayed here.
 <video width=640, height=480 id="vidframe"></video>
 </body>
-<script type = "text/javascript"
-        src = "{{ url_for('static', filename = 'watch.js') }}" defer></script>
