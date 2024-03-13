@@ -18,11 +18,12 @@ let recorder = null
 async function getCDN(streamid){
     const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"})
     const data = await response.json()
-    return "http://"+data.server_address+":"+data.server_port+"/upload_chunk"
+    return "http://"+data.server_address+":"+data.server_port
 }
 
 
 async function stream(){
+
 
   isStreaming = true
   let stream_title = document.getElementById("stream_title").value
@@ -36,18 +37,52 @@ async function stream(){
   establishStreamData.append('streamid',streamid)
   establishStreamData.append('msg','Awaiting Data')
   const initcdn = await getCDN(streamid)
-  const establishStream = await fetch(initcdn,{method:"POST",body:establishStreamData})
+  //const establishStream = await fetch(initcdn,{method:"POST",body:establishStreamData})
+  //const response2 = await fetch(initcdn,{method:"GET"});
 
+  vidframe = document.getElementById("live");
+  vidframe.crossOrigin = 'anonymous';
+  const mediaSource = new MediaSource();
+  vidframe.src = URL.createObjectURL(mediaSource)
+
+  var queue = [];
+  var buffer;
+
+  mediaSource.addEventListener('sourceopen', function(e) {
+    vidframe.play()
+    .then(() => {
+      console.log("video should be playing fine");
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  
+    buffer = mediaSource.addSourceBuffer("video/webm; codecs=opus,vp8");
+    buffer.addEventListener('update', function() {
+      if (queue.length > 0 && !buffer.updating) {
+        buffer.appendBuffer(queue.shift());
+      }
+    });
+  }, false);
+  
+  const socket = io(initcdn);
+  console.log(socket);
+
+  socket.emit("register_new_stream", {"streamid": streamid});
+  socket.on("stream_registration_response", json_arg => {
+    console.log(json_arg);
+  });
+  
   let captureStream
   try{
   captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
   isStreaming = true
-  recorder = new MediaRecorder(captureStream,{ mimeType: "video/webm; codecs=vp8" })
+  recorder = new MediaRecorder(captureStream,{ mimeType: "video/webm; codecs=opus,vp8" })
   recorder.ondataavailable = sendToServer
   recorder.onstop = stop_recording
   chunks = []
 
-  recorder.start(5000)
+  recorder.start(15000)
   async function stop_recording(){
     captureStream.getTracks().forEach((track) => track.stop())
     let formData = new FormData()
@@ -57,24 +92,43 @@ async function stream(){
     return
 
   }
+
+  socket.on("data_broadcast_result", json_arg => {
+    console.log(json_arg);
+  });
+
   async function sendToServer(event){
     if(!isStreaming){
       return
     }
-    chunks.push(event.data)
 
-    const blobData = new FormData()
-    blobData.append("chunk",new Blob(chunks, { type: 'video/webm' }),"file")
-    let formData = new FormData()
-    formData.append('streamid',streamid)
-    blobData.append('streamid',streamid)
+    var buff = await event.data.arrayBuffer();
 
-    await fetch("http://127.0.0.1:5000/update_stream",{method:"POST",body:formData})
+    if (typeof event.data !== 'string') {
+      if (buffer.updating || queue.length > 0) {
+        console.log("pushed to queue");
+        queue.push(buff);
+      } else {
+        console.log("appended to buffer");
+        buffer.appendBuffer(buff);
+      }
+    }
+    
+    socket.emit("broadcast_data", {"data": event.data, "streamid": streamid});
 
-    const cdn = await getCDN(streamid)
+    //chunks.push(event.data)
 
-    await fetch(cdn,{method:"POST",body:blobData})
+    //const blobData = new FormData()
+    //blobData.append("chunk",new Blob(chunks, { type: 'video/webm' }),"file")
+    //let formData = new FormData()
+    //formData.append('streamid',streamid)
+    //blobData.append('streamid',streamid)
 
+    //await fetch("http://127.0.0.1:5000/update_stream",{method:"POST",body:formData})
+
+    //const cdn = await getCDN(streamid)
+
+    //await fetch(cdn,{method:"POST",body:blobData})
   }
 
 }
