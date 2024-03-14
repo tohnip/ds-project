@@ -33,6 +33,9 @@ Vanilla JavaScript was used for the frontend. The MediaRecorder and MediaSource 
 ### Backend 
 The backend, including the API routes and load balancing logic, were done in Python, using the Flask framework.
 
+## Instructions to run locally
+Idk Docker, you can add this section.
+
 ## Results of the tests:
 Detailed description of the system evaluation
 Evaluate your implementation using selected criteria, for example:
