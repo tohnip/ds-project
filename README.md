@@ -5,6 +5,8 @@ Group track: industrial
 - Jakob Coles: 2307231, jcoles23@student.oulu.fi, research track
 - Patrik Tohni: 2303253, patrik.tohni@student.oulu.fi, research track
 
+Public repo url: https://github.com/tohnip/ds-project
+
 ## Dead Streaming
 
 ## About the project
