@@ -135,6 +135,7 @@ Our backend scales very poorly, so optimizations would be needed. This comes as 
 - There is almost no fault tolerance
 - There is no load balancing that would migrate ongoing streams from one CDN to another. This was planned, and naive solution to this was present before implementing the websocket communications, but time ran out before making it on websockets.
 - The streams can't be watched if the first segment is missed.
+    -  We tested an approach to allow viewers to join late, but it required sending the whole stream with every request instead of a single chunk, so was deemed to be unsustainable.
 - There is no way to automatically spawn new CDN instances if needed.
 - TCP based websockets are not ideal for video streaming, at least if the segments were individually playable. Something UDP related was planned, but there was no time to implement.
 - The main server doesn't keep track of CDN health, we don't notice if a CDN goes down.
