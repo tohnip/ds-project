@@ -39,13 +39,24 @@ def get_lowest_util():
 @app.post("/register_server")
 def register_new_server():
     data = request.get_json()
-    logging.info({"message": "new server registered", "server info": data})
 
     hostname = data["hostname"]
     if hostname not in server_status:
         server_status[hostname] = {"address": data["address"], "port": data["port"], "load": 0}
+        logging.info({
+            "message": "new server registered",
+            "server info": data,
+            "server utilizations": {hostname: cdn["load"] for hostname, cdn in server_status.items()},
+        })
+
         return "Successs"
     else:
+        logging.warning({
+            "message": "new server requested registration, but hostname was already in use",
+            "server info": data,
+            "server utilizations": {hostname: cdn["load"] for hostname, cdn in server_status.items()},
+        })
+
         return Response("We already have a CDN with your hostname", status=400)
 
 
@@ -65,6 +76,13 @@ def get_cdn(streamid):
         'server_address': server_status[lives_map[streamid]]["address"],
         'server_port': server_status[lives_map[streamid]]["port"],
     }
+    
+    logging.info({
+        "message": "CDN address requested",
+        "streamid": streamid,
+        "cdn data": return_data,
+        "server utilizations": {hostname: cdn["load"] for hostname, cdn in server_status.items()},
+    })
     return return_data
 
 
@@ -88,27 +106,31 @@ def create_stream():
     lives_map[streamid] = sever_hostname
     titles_map[streamid] = title
 
+    logging.info({
+        "message": "created a stream",
+        "streamid": streamid,
+        "title": title,
+        "server utilizations": {hostname: cdn["load"] for hostname, cdn in server_status.items()},
+    })
+
     return {"streamid":streamid}
 
 
-@app.route("/update_stream",methods=["POST"])
-def update_stream():
-    streamid = request.form.get("streamid")
-    new_server_id = get_lowest_util()
-
-    if server_status[lives_map[streamid]]["load"] - server_status[new_server_id]["load"] > 1:
-        server_status[lives_map[streamid]]["load"] -= 1
-        server_status[new_server_id]["load"] += 1
-        lives_map[streamid] = new_server_id
-
-    return "OK"
-
-
-@app.route("/delete_stream",methods=["POST"])
+@app.route("/delete_stream", methods=["POST"])
 def delete_stream():
     streamid = request.form.get("streamid")
+    title = titles_map[streamid]
+
     server_status[lives_map[streamid]]["load"] -= 1
     del lives_map[streamid]
+    del titles_map[streamid]
+
+    logging.info({
+        "message": "deleted a stream",
+        "streamid": streamid,
+        "title": title,
+        "server utilizations": {hostname: cdn["load"] for hostname, cdn in server_status.items()},
+    })
 
     return "OK"
 

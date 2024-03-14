@@ -9,7 +9,7 @@ async function load_stream(streamid)
     const socket = io("http://"+data.server_address+":"+data.server_port);
     socket.emit("watch_stream", {"streamid": streamid});
     socket.on("stream_request_response", json_arg => {
-        console.log(json_arg);
+        console.log("stream request response", json_arg);
     })
 
     const mediaSource = new MediaSource();
