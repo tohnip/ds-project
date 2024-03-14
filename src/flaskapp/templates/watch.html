@@ -1,10 +1,12 @@
 <head>
-<title>Watching Stream -- {{title}}</title>
-<script type = "text/javascript"
-        src = "{{ url_for('static', filename = 'watch.js') }}" defer></script>
-        <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <title>Watching Stream -- {{title}}</title>
+    <script type = "text/javascript"
+            src = "{{ url_for('static', filename = 'watch.js') }}" defer>
+    </script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 </head>
+
 <body onload="load_stream('{{streamid}}')">
-A stream will be displayed here.
-<video width=640, height=480 id="vidframe"></video>
+    A stream will be displayed here.
+    <video width=640, height=480 id="vidframe"></video>
 </body>
