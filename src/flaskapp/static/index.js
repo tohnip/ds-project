@@ -1,6 +1,9 @@
-function to_live(){
+function to_live()
+{
   window.location.href = "/broadcast";
 }
-function to_view(){
+
+function to_view()
+{
   window.location.href = "/view"
 }
