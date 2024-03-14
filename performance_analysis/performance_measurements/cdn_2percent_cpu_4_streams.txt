@@ -1,0 +1,99 @@
+2024-03-14 19:55:57 {'message': 'received a viewing request', 'requested streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:56:03 {'message': 'received broadcasted data', 'length of data': 246614, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:56:03 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0004511499937507324, 'data_size': 246614}
+2024-03-14 19:56:03 {'message': 'received broadcasted data', 'length of data': 152654, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:56:03 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.00047464999806834385, 'data_size': 152654}
+2024-03-14 19:56:05 {'message': 'received broadcasted data', 'length of data': 113798, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:56:05 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0004525159965851344, 'data_size': 113798}
+2024-03-14 19:56:06 {'message': 'received broadcasted data', 'length of data': 112226, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:56:06 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.07644003900350071, 'data_size': 112226}
+2024-03-14 19:56:13 {'message': 'received broadcasted data', 'length of data': 149095, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:56:13 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005837790013174526, 'data_size': 149095}
+2024-03-14 19:56:14 {'message': 'received broadcasted data', 'length of data': 61609, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:56:14 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.013100200005283114, 'data_size': 61609}
+2024-03-14 19:56:15 {'message': 'received broadcasted data', 'length of data': 222467, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:56:15 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005742539942730218, 'data_size': 222467}
+2024-03-14 19:56:16 {'message': 'received broadcasted data', 'length of data': 184737, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:56:16 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.03634095099550905, 'data_size': 184737}
+2024-03-14 19:56:23 {'message': 'received broadcasted data', 'length of data': 88919, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:56:23 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0008516810048604384, 'data_size': 88919}
+2024-03-14 19:56:24 {'message': 'received broadcasted data', 'length of data': 180073, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:56:24 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.09941476200037869, 'data_size': 180073}
+2024-03-14 19:56:26 {'message': 'received broadcasted data', 'length of data': 269864, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:56:26 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005097469984320924, 'data_size': 269864}
+2024-03-14 19:56:26 {'message': 'received broadcasted data', 'length of data': 263437, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:56:26 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.03167426699656062, 'data_size': 263437}
+2024-03-14 19:56:33 {'message': 'received broadcasted data', 'length of data': 117927, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:56:33 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0008276009975816123, 'data_size': 117927}
+2024-03-14 19:56:34 {'message': 'received broadcasted data', 'length of data': 230430, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:56:34 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.00026719499874161556, 'data_size': 230430}
+2024-03-14 19:56:36 {'message': 'received broadcasted data', 'length of data': 72879, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:56:36 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005693710045306943, 'data_size': 72879}
+2024-03-14 19:56:37 {'message': 'received broadcasted data', 'length of data': 122021, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:56:37 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0009496380007476546, 'data_size': 122021}
+2024-03-14 19:56:43 {'message': 'received broadcasted data', 'length of data': 222528, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:56:43 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.00042762700468301773, 'data_size': 222528}
+2024-03-14 19:56:45 {'message': 'received broadcasted data', 'length of data': 127856, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:56:45 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.09935980400041444, 'data_size': 127856}
+2024-03-14 19:56:46 {'message': 'received broadcasted data', 'length of data': 435186, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:56:46 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0004483519951463677, 'data_size': 435186}
+2024-03-14 19:56:47 {'message': 'received broadcasted data', 'length of data': 360094, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:56:47 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.10222330300166504, 'data_size': 360094}
+2024-03-14 19:56:59 {'message': 'received broadcasted data', 'length of data': 301978, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:56:59 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005091400016681291, 'data_size': 301978}
+2024-03-14 19:57:08 {'message': 'received broadcasted data', 'length of data': 40185, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:57:09 {'message': 'received broadcasted data', 'length of data': 346392, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:57:09 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.198682246998942, 'data_size': 40185}
+2024-03-14 19:57:09 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.590974106999056, 'data_size': 346392}
+2024-03-14 19:57:09 {'message': 'received broadcasted data', 'length of data': 231534, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:57:09 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.20959678399958648, 'data_size': 231534}
+2024-03-14 19:57:11 {'message': 'received broadcasted data', 'length of data': 149457, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:57:11 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.1103622130030999, 'data_size': 149457}
+2024-03-14 19:57:16 {'message': 'received broadcasted data', 'length of data': 318741, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:57:16 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0013482819995260797, 'data_size': 318741}
+2024-03-14 19:57:18 {'message': 'received broadcasted data', 'length of data': 334927, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:57:18 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.2922351119996165, 'data_size': 334927}
+2024-03-14 19:57:19 {'message': 'received broadcasted data', 'length of data': 285370, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:57:19 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005596289993263781, 'data_size': 285370}
+2024-03-14 19:57:19 {'message': 'received broadcasted data', 'length of data': 183417, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:57:19 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.00037086800148244947, 'data_size': 183417}
+2024-03-14 19:57:26 {'message': 'received broadcasted data', 'length of data': 403445, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:57:26 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.00034695900103542954, 'data_size': 403445}
+2024-03-14 19:57:28 {'message': 'received broadcasted data', 'length of data': 400360, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:57:28 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0004277780026313849, 'data_size': 400360}
+2024-03-14 19:57:28 {'message': 'received broadcasted data', 'length of data': 43159, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:57:28 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.16760139699908905, 'data_size': 43159}
+2024-03-14 19:57:29 {'message': 'received broadcasted data', 'length of data': 22573, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:57:29 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0003001080040121451, 'data_size': 22573}
+2024-03-14 19:57:36 {'message': 'received broadcasted data', 'length of data': 433405, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:57:36 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0004546900017885491, 'data_size': 433405}
+2024-03-14 19:57:38 {'message': 'received broadcasted data', 'length of data': 418426, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:57:38 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.1997223779981141, 'data_size': 418426}
+2024-03-14 19:57:38 {'message': 'received broadcasted data', 'length of data': 75535, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:57:38 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0007346329948632047, 'data_size': 75535}
+2024-03-14 19:57:39 {'message': 'received broadcasted data', 'length of data': 71803, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:57:39 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.000506021999171935, 'data_size': 71803}
+2024-03-14 19:57:46 {'message': 'received broadcasted data', 'length of data': 345677, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:57:46 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0006747750012436882, 'data_size': 345677}
+2024-03-14 19:57:48 {'message': 'received broadcasted data', 'length of data': 327745, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:57:48 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.06936412899813149, 'data_size': 327745}
+2024-03-14 19:57:49 {'message': 'received broadcasted data', 'length of data': 131483, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:57:49 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0009432259976165369, 'data_size': 131483}
+2024-03-14 19:57:50 {'message': 'received broadcasted data', 'length of data': 146328, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:57:50 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0006827049946878105, 'data_size': 146328}
+2024-03-14 19:57:56 {'message': 'received broadcasted data', 'length of data': 333687, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:57:56 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.07981340600235853, 'data_size': 333687}
+2024-03-14 19:57:58 {'message': 'received broadcasted data', 'length of data': 347456, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:57:58 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005875780043425038, 'data_size': 347456}
+2024-03-14 19:57:59 {'message': 'received broadcasted data', 'length of data': 22414, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:57:59 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0006312129989964887, 'data_size': 22414}
+2024-03-14 19:58:00 {'message': 'received broadcasted data', 'length of data': 253201, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:58:00 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0011567479959921911, 'data_size': 253201}
+2024-03-14 19:58:06 {'message': 'received broadcasted data', 'length of data': 313455, 'streamid': '2cb8b2334d128d54c56d6594cdd9c1d1'}
+2024-03-14 19:58:06 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0005873819973203354, 'data_size': 313455}
+2024-03-14 19:58:08 {'message': 'received broadcasted data', 'length of data': 318889, 'streamid': '3a43aad654efdf8b17e7951cfb416782'}
+2024-03-14 19:58:08 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.09984896799869603, 'data_size': 318889}
+2024-03-14 19:58:09 {'message': 'received broadcasted data', 'length of data': 78248, 'streamid': '05c4f2f958dfbff3eee79e4980160889'}
+2024-03-14 19:58:09 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.0007339779986068606, 'data_size': 78248}
+2024-03-14 19:58:09 {'message': 'received broadcasted data', 'length of data': 189773, 'streamid': 'd07ecc140073caf578b4dfbbb132ba51'}
+2024-03-14 19:58:09 {'message': 'performance_metrics', 'forwarding_data_duration_seconds': 0.001374472994939424, 'data_size': 189773}

@@ -78,6 +78,7 @@ def create_a_new_stream(data):
 
 @socketio.on("broadcast_data")
 def handle_incoming_data(data):
+    start = time.perf_counter()
     if request.sid not in streamers:
         logging.warning({
             "message": "received a chunk from someone who hasn't registered a stream",
@@ -124,6 +125,13 @@ def handle_incoming_data(data):
 
     emit("data_broadcast_result", {"result": "success"})
     emit("streaming_data", data["data"], to=streamers[request.sid])
+
+    duration = time.perf_counter() - start
+    logging.info({
+        "message": "performance_metrics",
+        "forwarding_data_duration_seconds": duration,
+        "data_size": len(data["data"])
+    })
 
 
 @socketio.on("watch_stream")

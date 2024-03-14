@@ -8,6 +8,7 @@ services:
       - PORT=15000
 
   cdn1:
+    cpus: 1.0
     build: ./src/cdn/
     ports:
       - "5001:15000"
@@ -18,8 +19,9 @@ services:
       - HOSTNAME=cdn1
       - LOAD_BALANCER_HOSTNAME=loadbalancer
       - LOAD_BALANCER_PORT=15000
-    
+
   cdn2:
+    cpus: 1.0
     build: ./src/cdn/
     ports:
       - "5002:15000"
