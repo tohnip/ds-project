@@ -1,9 +1,19 @@
 async function load_stream(streamid)
 {
-    const mediaSource = new MediaSource();
     vidframe = document.getElementById("vidframe");
     vidframe.crossOrigin = 'anonymous';
-    vidframe.src = URL.createObjectURL(mediaSource);
+
+    const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid, {method: "GET"});
+    const data = await response.json();
+
+    const socket = io("http://"+data.server_address+":"+data.server_port);
+    socket.emit("watch_stream", {"streamid": streamid});
+    socket.on("stream_request_response", json_arg => {
+        console.log(json_arg);
+    })
+
+    const mediaSource = new MediaSource();
+    vidframe.src = URL.createObjectURL(mediaSource)
 
     var queue = [];
     var buffer;
@@ -11,7 +21,7 @@ async function load_stream(streamid)
     mediaSource.addEventListener('sourceopen', () => {
         vidframe.play()
         .then(() => {
-            console.log("Video should be playing fine now.")
+            console.log("Video should be playing fine now.");
         })
         .catch(error => {
             console.log(error);
@@ -21,15 +31,6 @@ async function load_stream(streamid)
         buffer.addEventListener('update', () => {
             if (queue.length > 0 && !buffer.updating) buffer.appendBuffer(queue.shift());
         });
-    });
-
-    const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"});
-    const data = await response.json();
-
-    const socket = io("http://"+data.server_address+":"+data.server_port);
-    socket.emit("watch_stream", {"streamid": streamid});
-    socket.on("stream_request_response", json_arg => {
-        console.log("stream request response", json_arg);
     });
 
     socket.on('streaming_data', data => {

@@ -16,12 +16,14 @@ const displayMediaOptions = {
 let isStreaming = false;
 let recorder = null;
 
+
 async function getCDN(streamid)
 {
-    const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid,{method:"GET"});
+    const response = await fetch("http://127.0.0.1:5000/get_cdn/"+streamid, {method: "GET"});
     const data = await response.json();
     return "http://"+data.server_address+":"+data.server_port;
 }
+
 
 async function stop_stream()
 {
@@ -29,24 +31,24 @@ async function stop_stream()
     recorder.stop();
 }
 
+
 async function stream()
 {
     isStreaming = true;
     let stream_title = document.getElementById("stream_title").value;
 
     let formData = new FormData();
-    formData.append('title',stream_title);
+    formData.append('title', stream_title);
 
-    const response = await fetch("http://127.0.0.1:5000/create_stream",{method:"POST",body:formData});
+    const response = await fetch("http://127.0.0.1:5000/create_stream", {method: "POST", body: formData});
     const data = await response.json();
     let streamid = data.streamid;
 
-    const mediaSource = new MediaSource();
     vidframe = document.getElementById("live");
     vidframe.crossOrigin = 'anonymous';
+    const mediaSource = new MediaSource();
     vidframe.src = URL.createObjectURL(mediaSource);
 
-    const cdnAddress = await getCDN(streamid);
     var queue = [];
     var buffer;
 
@@ -58,15 +60,14 @@ async function stream()
         .catch(error => {
             console.log(error);
         });
-    
+
         buffer = mediaSource.addSourceBuffer("video/webm; codecs=opus,vp8");
-        buffer.addEventListener('update', function() {
-        if (queue.length > 0 && !buffer.updating) {
-            buffer.appendBuffer(queue.shift());
-        }
+        buffer.addEventListener('update', () => {
+            if (queue.length > 0 && !buffer.updating) buffer.appendBuffer(queue.shift());
         });
     });
-    
+
+    const cdnAddress = await getCDN(streamid);
     const socket = io(cdnAddress);
 
     socket.emit("register_new_stream", {"streamid": streamid});
@@ -77,49 +78,50 @@ async function stream()
     socket.on("data_broadcast_result", json_arg => {
         console.log("data chunk sending result", json_arg);
     });
-    
+
+
     let captureStream;
+
+
+    async function stop_recording()
+    {
+        captureStream.getTracks().forEach((track) => track.stop());
+        let formData = new FormData();
+        formData.append('streamid',streamid);
+        await fetch("http://127.0.0.1:5000/delete_stream",{method: "POST", body: formData});
+        isStreaming = false;
+    }
+
+
+    async function sendToServer(event)
+    {
+        if (!isStreaming) return;
+
+        if (typeof event.data !== 'string')
+        {
+            var buff = await event.data.arrayBuffer();
+            if (buffer.updating || queue.length > 0)
+            {
+                console.log("Pushed a video chunk into the queue.");
+                queue.push(buff);
+            }
+            else
+            {
+                console.log("Appended the video chunk into the buffer.");
+                buffer.appendBuffer(buff);
+            }
+        }
+
+        socket.emit("broadcast_data", {"data": event.data, "streamid": streamid});
+    }
+
     try
     {
-        isStreaming = true
-        chunks = []
-
         captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
         recorder = new MediaRecorder(captureStream, {mimeType: "video/webm; codecs=opus,vp8"});
         recorder.ondataavailable = sendToServer;
         recorder.onstop = stop_recording;
-        recorder.start(15000);
-
-        async function stop_recording()
-        {
-            captureStream.getTracks().forEach((track) => track.stop());
-            let formData = new FormData();
-            formData.append('streamid',streamid);
-            await fetch("http://127.0.0.1:5000/delete_stream",{method:"POST",body:formData});
-            isStreaming = false;
-        }
-
-        async function sendToServer(event)
-        {
-            if (!isStreaming) return;
-
-            if (typeof event.data !== 'string')
-            {
-                var buff = await event.data.arrayBuffer();
-                if (buffer.updating || queue.length > 0)
-                {
-                console.log("pushed to queue");
-                queue.push(buff);
-                }
-                else
-                {
-                console.log("appended to buffer");
-                buffer.appendBuffer(buff);
-                }
-            }
-        
-            socket.emit("broadcast_data", {"data": event.data, "streamid": streamid});
-        }
+        recorder.start(10000);
     }
     catch(err)
     {
