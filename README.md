@@ -1,64 +1,155 @@
-# ds-project
-Project repo for our group on distributed systems course
+# Distibuted systems course project
 
-I'm using VSCode as my code editor. You can use what you wish, but at least that is a good one:
-> https://code.visualstudio.com/
+Group track: industrial
 
-Download and install this for docker containers:
-> https://www.docker.com/products/docker-desktop/
+- Jakob Coles: 2307231, jcoles23@student.oulu.fi, research track
+- Patrik Tohni: 2303253, patrik.tohni@student.oulu.fi, research track
 
-Possible troubleshooting with docker:
+## Dead Streaming
 
-I had to add my user to a docker users group before I could run docker commands without sudo, but that might be just a WSL related issue. Anyway, this answered that issue:
-> https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
+## About the project
+Dead Streaming is a distributed live streaming app that allows people to stream their screen live to viewers, who can select a stream to watch from the list of currently active ones.
 
 
-To try out your docker installation, try the following:
-```
-cd <your path>/ds-project
-docker compose up --build
-```
-This will start three different nodes: broadcaster, server and consumer
+## Implemented components:
 
-The functionality is very simple at this point:
+### Broadcaster
 
-1. The broadcaster has some license free short story in the file source_material.json
-2. The broadcaster reads that material, splits it into words and starts sending the words together with the story name to the server, one word every 2 seconds
-3. Server uses Flask. It receives the words from broadcaster and stores them in working memory.
-4. The consumer first requests a list of stories by name for it to "stream" and then requests that story one word every two seconds.
+A broadcaster can access the app's website and go to the `/live` route, where they can select a stream title and begin streaming. The title and stream id, which is used to create a link to the stream, will be recorded by the main server. Video of the stream (really just a screen share at this point in time) will be continuously recorded and sent to the CDN every 10 seconds.
 
-The command will leave every node logging to the console so it's a bit busy. You can look at the specific containers easily through docker desktop app.
+### Viewer
 
-You can also use your browser to access different paths on the server, try these when the containers are up and running:
-> http://localhost:12345/
-> http://localhost:12345/available_content
-> http://localhost:12345/story/Bruce%20and%20the%20Spider%20by%20James%20Baldwin/1
+Viewers can access the same website as the broadcasters, but go to the `/view` route, where a list of currently active streams are visible, and can click on one to view a stream. Video segments are received every 10 seconds for a continuous viewing experience. The video segments are pushed to the viewer so there is no need for the viewer to poll anything.
 
-On the last one try different numbers on the last place instead of just 1.
+### CDNs
 
-To stop the containers you need to just use CTRL+C on that terminal window.
+One or more CDNs are used to distribute stream footage from broadcasters to viewers. The app can use multiple CDNs to implement load balancing. Broadcasters and viewers create a webosocket connection with the CDN that has been assigned to distibute the stream the clients are broadcasting or viewing. There are specific websocket events that take care of the data transfer.
 
-To remove the containers you can use:
-```
-docker compose rm
-```
+When a CDN receives a video segment through the broadcaster's socket, it forwrads the data as-is to everyone that has subscribed to watching the stream in question. The CDNs register themselves to the main server when they start up, so there is no need to hardcode the CDN locations. 
 
-You should see any running or stopped (but not removed) docker containers in your docker desktop program.
+### Main server
+
+The main server manages the other nodes and keeps track of app-wide tasks. For instance, CDNs that come online register themselves with the main server by `POST`ing their address information to the main server's `/register_server`. Also, the main server keeps a list of active streams to show viewers at the `/view` route, and deletes completed streams from said list.
+
+Finally, the load balancing logic is done on the main server. CDN load is tracked by counting the broadcasters that are streaming to a particular CDN, and each new stream is assigned to a CDN with the lowest number of streams at that time. 
+
+### Distributed Systems principles
+
+#### Architecture
+
+This represents the communication channels between different components in the systems. The communication channels are explained in the specific section.
+
+![architecture](/report_images/architecture_drawio.png)
+
+#### Naming
+
+Unique streamids are generated by taking a hex digest of the MD5 hash of the stream title concatenated with the system time at the time the stream was created. This ensures that each stream has a unique name and can thus be accessed by a specific URL.
+
+CDNs register themselves to the main server, and could be named whatever. There is a check that two CDNs with the same hostname are not able to register, instead the later one is discarded and registration failure response is sent.
+
+Clients get their names from the SocketIO library and are only ever referred to with some socket id.
+
+#### Communication
+
+Communication between nodes is primarily done with websocket communications. One-off requests are made with regular HTTP `GET`s and `POST`s. Video is through the websockets transferred in the form of data Blobs wrapped inside JSON objects.
+
+The broadcaster initializes a websocket connection with the assigned CDN, registers its stream there with `register_new_stream` event, and starts sending segments with `broadcast_data` event.
+
+The server creates a "room" for each streamid that is registered to it. Segments coming to a specific streamid are forwarded to every viewer who has subscribed to that room. Subscribing happens by asking from the flaskapp the CDN server, connecting to it with a websocket and issuing a `watch_stream` event, which will add the viewers socket to the streams "room".
+
+Forwarded segments are sent with `streaming_data` event. When viewers receive that event they write the video segment into the mediasource buffer and it's played on the web page.
+
+## Built with
+
+### Frontend
+
+Vanilla JavaScript was used for the frontend. The MediaRecorder and MediaSource APIs proved useful in recording and playing back video. JavaScipt SocketIO for data transfers is dynamically loaded from outside source.
+
+### Backend
+
+The backend, including the API routes and load balancing logic, were done in Python, using the Flask framework and its different plugins. There is no persistent storage, so the technology stack is pretty small.
+
+### Containerization
+
+The backend nodes are containerized with Docker.
+
+## Instructions to run locally
+
+After extractin the package or cloning it from GitHub, one can start the backend components (main server and two CDNs) with simple ```docker compose up -d --build``` command. You will obviously need Docker Desktop or similar installed on your system.
+
+The main server should expose port 5000 on the localhost so browse to ``http://localhost:5000/`` to access the web application clients. Cleanest way to follow the backend nodes' logs is to look at the Docker Desktop container outputs, but you can also omit the `-d` from the command and the logging will be put shown on the console.
+
+You can open as many different tabs for multiple broadcasters and viewers if you wish, each of them get a separate connection to the CDNs.
+
+> Note though, the video format that we use to encode the segments doesn't support segmentwise playback. This means that you need to start viewing the started broadcast in another tab in less than 10 seconds or you will miss the first segment and no playback will appear.
+
+If you start watching the stream in time, then the stream should stay stable. At the time of writing this I have had a stream running for 139 minutes non-stop. The video segments are still received by a viewer even if you miss the first segment. This can be seen from browsers network inspecting tools.
+
+## Results of the performance tests
+
+### Testing process
+
+We thought about different ways to test performance. The most natural way would be to measure the delays between segments playing back on the viewer end or gathering actual CPU utilization data from the CDN nodes. In the end we settled on measuring the time it takes the CDNs to forward video segments from broadcasters to viewers.
+
+With this metric it's difficult to draw a line on what is good or bad performance, but the relative change in performance is easy to monitor and in more serious use case we could follow the data and set a threshold values for acceptable service by empirically noting where the viewing experience starts to decrease.
+
+The measurements were done by utilizing Pythons performance counters to get accurate times on the durations. In addition we measured the video segment sizes so that we could normalize the durations against the amount of work that was done. The measurements are simply logged among other logging and later parsed for analysis.
+
+The logs need to be manually collected since the logging is done to standard output instead of into a file. This is just because we didn't feel like creating log files in the time that we had on our hands. We collected the manually created log files under the `performance_analysis` subpackage part of this package. There is an analysis script that produces simple plots from the files. The script works only for files following specific naming convention, but that could be changes easily. The naming convention is evident when looking at the measurement files delivered with this package.
+
+### Comparison
+
+We decided to compare the video segment forwarding speed with different number of concurrent streams and different amounts of CPU power assigned to the CDN nodes. Our CDNs aren't well optimized so 4 concurrent streams on one CPU deprived CDN was already enough to see clear changes in the measured metrics.
+
+### Results
+
+First we are going to look at the average transfer speeds. This is the total amount of kilobytes processed in the total amount of seconds over all the measurements in the collected logs.
+
+![average_speed](/report_images/fig_average_speed.png)
+
+It's clear that with more CPU power the processing speeds are a lot faster. In both cases we can see thatthe performance decreases quickly when the number of streams increases. From this we could make decisions on what the maximum number of streams per CDN should be.
+
+Next we will look at the slowest processing speed among the measurements taken on each combination of parameters.
+
+![slowest_speeds](/report_images/fig_slowest_speed.png)
+
+Similar downward trend is visible. In some sense the minimum processing speed might be more important than the average one, because these minimum cases are what cause visible lag on the viewer's stream. That is then perceived as poor service quality.
+
+Finally let's also look at the maximum time that was taken to send any segment during the measurements.
+
+![maximum_forward_time](/report_images/fig_max_forward_time.png)
+
+There seems to be an anomaly at two concurrent streams. Otherwise the data is similar to what the other figures showed: CPU power is king and relatively small number of streams already disturbs the CDNs delivery.
+
+### Measurement conclusions
+
+Our backend scales very poorly, so optimizations would be needed. This comes as no surprise as no effort was put to that. We would need to spawn a new CDN for at least every fourth stream or have really powerful CPUs machines to provide acceptable service. Network bottlenecks were not even part of this as everything ran locally in containers.
 
 
-## Running without docker
+## Known issues
 
-The components can also be run without docker. You can use for example
-```
-python3 app.py
-```
-in the server folder to run the app just on your system. Notice that in that case the Flask server can be found from
-> http://localhost:15000
+- The web server runs some debug version which is very inefficient.
+- There are multiple security issues. The data is not encrypted, hijacking strams is possible, registering things as CDNs is possible by anyone and the list goes on.
+- There is almost no fault tolerance
+- There is no load balancing that would migrate ongoing streams from one CDN to another. This was planned, and naive solution to this was present before implementing the websocket communications, but time ran out before making it on websockets.
+- The streams can't be watched if the first segment is missed.
+- There is no way to automatically spawn new CDN instances if needed.
+- TCP based websockets are not ideal for video streaming, at least if the segments were individually playable. Something UDP related was planned, but there was no time to implement.
+- The main server doesn't keep track of CDN health, we don't notice if a CDN goes down.
+- There is no unit testing or integration testing.
+- No CI/CD pipelines.
 
-Similarly other components can be run locally. When testing broadcaster, it's probably a good idea to start the server on a docker container and then run the broadcaster outside of a container. Just need to take care in choosing the correct ports and hosts when things are running outside docker!
+## Distibution of work
 
-> Easiest way to have only specific conteiners running would be to remove every container with the command above and then comment out the nodes you don't want running in the compose.yaml and starting with compose up again
+The work we did for this went more or less like this:
+
+1. Patrik created some initial versions of containerized, websocketed nodes that streamed textual data.
+2. Jakob did `a lot` of work to create the web apps and their HTTP communication from scratch to get the video streaming going.
+3. Jakob set up the CDN load balancing, that Patrik had to simplify a bit in the end.
+4. Patrik moved the initial containerization logic to the new web based components and changed HTTP requests to websocket based to keep the connection alive and allow pushing data to the viewer instead of viewer polling it.
+5. Patrik cleaned the codebase, added measurement logic and wrote the analysis script.
+6. Report was written together between Jakob and Patrik.
+
+Patrik estimates to have put around 30 hours into this. Jakob put in around 60 hours. The third person kept quiet after initial plan was formed and didn't contribute after that.
 
 
-## Web app
-To run the web version that supports video streaming, spin up some CDNs by going to the `src/cdn` folder and running `python app.py <port number>` (don't use 5000 as this is reserved for the server). To start the main server, go to the `src/flaskapp` folder and run `python app.py`. Broadcasting and viewing can both be done in the browser at http://127.0.0.1:5000.
